@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Validation with Regex</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Registration Form</h1>
+    <form id="registrationForm">
+        <div class="form-group">
+            <label for="fullName">Full Name:</label>
+            <input type="text" id="fullName" name="fullName" required>
+            <div id="fullNameError" class="error"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            <div id="emailError" class="error"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="phone">Phone Number:</label>
+            <input type="tel" id="phone" name="phone" required>
+            <div id="phoneError" class="error"></div>
+        </div>
+
+        <div class="form-group">
+            <label>Gender:</label>
+            <select id="gender" name="gender" required>
+                <option value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+                <option value="prefer-not-to-say">Prefer not to say</option>
+            </select>
+            <div id="genderError" class="error"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="address">Address:</label>
+            <textarea id="address" name="address" rows="3" required></textarea>
+            <div id="addressError" class="error"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="dob">Date of Birth:</label>
+            <input type="date" id="dob" name="dob" required>
+            <div id="dobError" class="error"></div>
+        </div>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let isValid = true;
+
+            // Clear previous errors
+            document.querySelectorAll('.error').forEach(el => el.textContent = '');
+
+            // Validate Full Name (letters and spaces only, 2-50 characters)
+            const fullName = document.getElementById('fullName').value.trim();
+            const nameRegex = /^[a-zA-Z\s]{2,50}$/;
+            if (!nameRegex.test(fullName)) {
+                document.getElementById('fullNameError').textContent = 
+                    'Please enter a valid name (letters and spaces only, 2-50 characters)';
+                isValid = false;
+            }
+
+            // Validate Email
+            const email = document.getElementById('email').value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                document.getElementById('emailError').textContent = 
+                    'Please enter a valid email address';
+                isValid = false;
+            }
+
+            // Validate Phone Number (supports international formats)
+            const phone = document.getElementById('phone').value.trim();
+            const phoneRegex = /^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,3}[-\s\.]?[0-9]{3,4}[-\s\.]?[0-9]{3,4}$/;
+            if (!phoneRegex.test(phone)) {
+                document.getElementById('phoneError').textContent = 
+                    'Please enter a valid phone number';
+                isValid = false;
+            }
+
+            // Validate Gender
+            const gender = document.getElementById('gender').value;
+            if (!gender) {
+                document.getElementById('genderError').textContent = 
+                    'Please select a gender';
+                isValid = false;
+            }
+
+            // Validate Address (at least 10 characters)
+            const address = document.getElementById('address').value.trim();
+            if (address.length < 10) {
+                document.getElementById('addressError').textContent = 
+                    'Address must be at least 10 characters long';
+                isValid = false;
+            }
+
+            // Validate Date of Birth (must be in the past)
+            const dob = document.getElementById('dob').value;
+            const dobDate = new Date(dob);
+            const today = new Date();
+            if (dobDate >= today) {
+                document.getElementById('dobError').textContent = 
+                    'Date of birth must be in the past';
+                isValid = false;
+            }
+
+            if (isValid) {
+                alert('Form submitted successfully!');
+                // Here you would typically send the data to a server
+                // this.form.submit();
+            }
+        });
+    </script>
+</body>
+</html>
